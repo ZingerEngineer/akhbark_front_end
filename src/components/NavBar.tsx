@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { signOutUser } from '../utils/signOutUser'
 import { notifyMessage } from '../utils/toasts'
 import { useContext, useEffect, useState } from 'react'
-import { userDataContext } from '../App'
+// import { userDataContext } from '../App'
 interface navigationItem {
   name: string
   link: string
@@ -26,14 +26,14 @@ function classNames(...classes: (boolean | string | undefined)[]): string {
 }
 
 const Example = () => {
-  const userData = useContext(userDataContext)
+  // const userData = useContext(userDataContext)
   const [userEmail, setUserEmail] = useState<string | null | undefined>(null)
   const [userImage, setUserImage] = useState<string | null | undefined>(null)
 
-  useEffect(() => {
-    setUserEmail(userData?.currentUser?.email)
-    setUserImage(userData?.currentUser?.photoURL)
-  }, [userData])
+  // useEffect(() => {
+  // setUserEmail(userData?.currentUser?.email)
+  // setUserImage(userData?.currentUser?.photoURL)
+  // }, [userData])
   return (
     <Disclosure
       as="nav"
