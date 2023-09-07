@@ -1,14 +1,16 @@
 import axios from 'axios'
 import LoginSignupForm from '../components/LoginSignupForm'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
+  const naivgate = useNavigate()
   const login = async (data: LoginSignupFormData) => {
     try {
       const res = await axios.post('http://localhost:8080/auth/login/', data)
       const { userData, token } = res.data.receivedData
       localStorage.setItem('accessToken', token)
-      console.log(userData)
+      naivgate('/home')
     } catch (error) {
       if (error instanceof Error) {
         console.log(error)
