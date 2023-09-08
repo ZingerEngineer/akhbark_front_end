@@ -16,6 +16,7 @@ function Register() {
         userName={true}
         abortButtonLabel="Cancel"
         approveButtonLabel="Register"
+        toastSuccessMessage="Register success."
         callBackDataFunction={register}
       />
     </div>

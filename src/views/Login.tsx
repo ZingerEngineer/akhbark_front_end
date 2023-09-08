@@ -5,22 +5,14 @@ import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { ThemeContext, userDataContext } from '../App'
 
-interface UserData {
-  userName: string
-  email: string
-  avatar: string
-  role: string
-}
-
 function Login() {
   const naivgate = useNavigate()
-  const theme = useContext(ThemeContext)
-  const [userData, setUserData] = useState()
+  const userState = useContext(userDataContext)
   const login = async (data: LoginSignupFormData) => {
     try {
       const res = await axios.post('http://localhost:8080/auth/login/', data)
       const { userData, token } = res.data.receivedData
-
+      userState?.setUserData(userData)
       localStorage.setItem('accessToken', token)
       naivgate('/home')
     } catch (error) {
@@ -39,6 +31,7 @@ function Login() {
         password={true}
         abortButtonLabel="Cancel"
         approveButtonLabel="Login"
+        toastSuccessMessage="Login success."
         callBackDataFunction={login}
       />
     </div>

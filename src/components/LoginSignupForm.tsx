@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import googleSVG from '../svgs/google.svg'
 import facebookSVG from '../svgs/facebook.svg'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
-import { notifyMessage } from '../utils/toasts'
+import { notifyMessage, notifySuccess } from '../utils/toasts'
+import { ThemeContext } from '../App'
 interface LoginSignupFormProps {
   formType: string
   formLabel: string
@@ -12,6 +13,7 @@ interface LoginSignupFormProps {
   password?: boolean
   abortButtonLabel: string
   approveButtonLabel: string
+  toastSuccessMessage: string
   callBackDataFunction?: (formData: LoginSignupFormData) => void
 }
 
@@ -23,8 +25,10 @@ const FormComponent = ({
   password,
   abortButtonLabel,
   approveButtonLabel,
+  toastSuccessMessage,
   callBackDataFunction
 }: LoginSignupFormProps) => {
+  const theme = useContext(ThemeContext)
   const navigate = useNavigate()
   const handleGoogleCallBack = async () => {
     try {
@@ -65,7 +69,14 @@ const FormComponent = ({
     })
   }, [userNameValue, emailValue, passwordValue])
   const handleSignUp = () => {
-    if (callBackDataFunction && formData) callBackDataFunction(formData)
+    if (callBackDataFunction && formData) {
+      try {
+        callBackDataFunction(formData)
+        notifySuccess(toastSuccessMessage)
+      } catch (error) {
+        notifyMessage('Error happened.')
+      }
+    }
   }
   return (
     <form
@@ -156,25 +167,35 @@ const FormComponent = ({
             ''
           )}
           <div className="auth-buttons px-3 mt-5 flex justify-center">
-            {formType
-              ? authVendors.map((item) =>
-                  item.enabled ? (
-                    <button
-                      onClick={item.functionality}
-                      key={item.alt}
-                      className="google-auth-button rounded-full shadow-md border-solid border-2 border-gray-200 p-2 mx-1"
-                    >
-                      <img
-                        className="w-6"
-                        src={item.src}
-                        alt={item.alt}
-                      />
-                    </button>
-                  ) : (
-                    ''
-                  )
-                )
-              : ''}
+            {authVendors.map((item) =>
+              item.enabled ? (
+                <button
+                  onClick={item.functionality}
+                  key={item.alt}
+                  className="google-auth-button rounded-full shadow-md border-solid border-2 border-gray-200 p-2 mx-1"
+                >
+                  <img
+                    className="w-6"
+                    src={item.src}
+                    alt={item.alt}
+                  />
+                </button>
+              ) : (
+                ''
+              )
+            )}
+          </div>
+          <div className="forgot-credentials-wrapper px-3 mt-5 flex justify-center">
+            {formType === 'login' ? (
+              <Link
+                to="/forget-password"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Forgot password ?
+              </Link>
+            ) : (
+              ''
+            )}
           </div>
         </div>
       </div>
