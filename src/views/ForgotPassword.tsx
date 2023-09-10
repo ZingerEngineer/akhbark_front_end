@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 function ForgotPassword() {
-  const handleSignUp = () => {}
+  const handleOnClick = () => {}
   const [emailValue, setEmailValue] = useState<string>('')
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -46,7 +47,7 @@ function ForgotPassword() {
           <button
             type="submit"
             className="rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={handleSignUp}
+            onClick={handleOnClick}
           >
             Enter
           </button>
