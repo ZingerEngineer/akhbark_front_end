@@ -188,7 +188,7 @@ const FormComponent = ({
           <div className="forgot-credentials-wrapper px-3 mt-5 flex justify-center">
             {formType === 'login' ? (
               <Link
-                to="/forget-password"
+                to="/forgot-password"
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
                 Forgot password ?
