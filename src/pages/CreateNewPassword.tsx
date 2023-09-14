@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { notifyPromise } from '../utils/toasts'
 
 function ForgotPassword() {
   const { frgt } = useParams()
+
   const tokenValidation = async () => {
     try {
       const res = await axios.post(
@@ -16,7 +17,7 @@ function ForgotPassword() {
       return error
     }
   }
-  useEffect(() => {
+  useLayoutEffect(() => {
     tokenValidation()
   })
 
