@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { notifyPromise } from '../utils/toasts'
@@ -6,7 +6,7 @@ import { notifyPromise } from '../utils/toasts'
 function ForgotPassword() {
   const { frgt } = useParams()
 
-  const tokenValidation = async () => {
+  const tokenValidation = useCallback(async () => {
     try {
       const res = await axios.post(
         'http://localhost:8080/auth/validate-reset-password-token',
@@ -16,7 +16,7 @@ function ForgotPassword() {
     } catch (error) {
       return error
     }
-  }
+  }, [frgt])
   useLayoutEffect(() => {
     tokenValidation()
   })

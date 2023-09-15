@@ -5,7 +5,7 @@ import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { UserData } from './interfaces/userData'
 import CreateNewPassword from './pages/CreateNewPassword'
 
@@ -14,6 +14,7 @@ export const userDataContext = createContext<{
   userData: UserData | null
   setUserData: React.Dispatch<React.SetStateAction<UserData | null>>
 } | null>(null)
+
 function App() {
   const theme = useContext(ThemeContext)
   const [userData, setUserData] = useState<UserData | null>(null)
