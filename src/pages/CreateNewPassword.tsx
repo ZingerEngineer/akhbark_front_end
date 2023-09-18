@@ -1,22 +1,28 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { notifyPromise } from '../utils/toasts'
+import { useNavigate } from 'react-router-dom'
+import { userDataContext } from '../App'
 
 function ForgotPassword() {
+  const userData = useContext(userDataContext)
+  const [passwordValue, setPasswordValue] = useState<string>('')
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('')
+  const navigate = useNavigate()
   const { frgt } = useParams()
-
   const tokenValidation = useCallback(async () => {
     try {
       const res = await axios.post(
         'http://localhost:8080/auth/validate-reset-password-token',
         { token: frgt }
       )
-      console.log(res)
+      if (!res.data.isValidReset) navigate('/login')
     } catch (error) {
-      return error
+      navigate('/login')
     }
   }, [frgt])
+
   useLayoutEffect(() => {
     tokenValidation()
   })
@@ -24,8 +30,6 @@ function ForgotPassword() {
   const isSamePassword = (password: string, confirmPassword: string) => {
     return password === confirmPassword ? true : false
   }
-  const [passwordValue, setPasswordValue] = useState<string>('')
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('')
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
   }
@@ -40,20 +44,25 @@ function ForgotPassword() {
     setConfirmPasswordValue(event.currentTarget.value)
   }
   const handleOnClick = async () => {
+    const userEmail = userData?.userData?.email
+    if (!userEmail) return
     const isSamePasswordValue = isSamePassword(
       passwordValue,
       confirmPasswordValue
     )
     if (!isSamePasswordValue) return
     const data = {
-      password: passwordValue
+      password: passwordValue,
+      email: userEmail
     }
     try {
-      await notifyPromise(
-        axios.post('http://localhost:8080/auth/change-password', data)
+      const res = await axios.post(
+        'http://localhost:8080/auth/create-new-password',
+        data
       )
+      console.log(res)
     } catch (error) {
-      return error
+      console.log(error)
     }
   }
   return (
