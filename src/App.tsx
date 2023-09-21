@@ -46,7 +46,7 @@ function App() {
               element={<ForgotPassword />}
             ></Route>
             <Route
-              path="/create-new-password/:frgt"
+              path="/create-new-password/:reset_password_token"
               element={<CreateNewPassword />}
             ></Route>
           </Routes>
