@@ -1,31 +1,37 @@
 import { useCallback, useLayoutEffect, useState, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { notifyPromise } from '../utils/toasts'
+import { notifyMessage, notifyPromise } from '../utils/toasts'
 import { useNavigate } from 'react-router-dom'
-import { userDataContext } from '../App'
 
 function ForgotPassword() {
-  const userData = useContext(userDataContext)
+  const [userEmail, setUserEmail] = useState<string>()
   const [passwordValue, setPasswordValue] = useState<string>('')
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('')
   const navigate = useNavigate()
-  const { frgt } = useParams()
+  const { reset_password_token } = useParams()
   const tokenValidation = useCallback(async () => {
     try {
       const res = await axios.post(
         'http://localhost:8080/auth/validate-reset-password-token',
-        { token: frgt }
+        null,
+        {
+          headers: {
+            reset_password_token
+          }
+        }
       )
+      console.log(res)
+      setUserEmail(res.data.userEmail)
       if (!res.data.isValidReset) navigate('/login')
     } catch (error) {
-      navigate('/login')
+      return navigate('/login')
     }
-  }, [frgt])
+  }, [reset_password_token])
 
   useLayoutEffect(() => {
     tokenValidation()
-  })
+  }, [])
 
   const isSamePassword = (password: string, confirmPassword: string) => {
     return password === confirmPassword ? true : false
@@ -44,25 +50,66 @@ function ForgotPassword() {
     setConfirmPasswordValue(event.currentTarget.value)
   }
   const handleOnClick = async () => {
-    const userEmail = userData?.userData?.email
-    if (!userEmail) return
+    if (!userEmail) {
+      notifyMessage('Error happened.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: false,
+        pauseOnHover: false,
+        theme: 'dark'
+      })
+      return
+    }
     const isSamePasswordValue = isSamePassword(
       passwordValue,
       confirmPasswordValue
     )
-    if (!isSamePasswordValue) return
+    if (!isSamePasswordValue) {
+      notifyMessage('Password must match confirm password.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: false,
+        pauseOnHover: false,
+        theme: 'dark'
+      })
+      return
+    }
     const data = {
       password: passwordValue,
       email: userEmail
     }
     try {
-      const res = await axios.post(
-        'http://localhost:8080/auth/create-new-password',
-        data
+      notifyPromise(
+        axios.post('http://localhost:8080/auth/create-new-password', data, {
+          headers: {
+            reset_password_token
+          }
+        }),
+        'Pending password change.',
+        'Password changed successfully.',
+        'Error happened.',
+        {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+          theme: 'dark'
+        }
       )
-      console.log(res)
     } catch (error) {
-      console.log(error)
+      return error
     }
   }
   return (
