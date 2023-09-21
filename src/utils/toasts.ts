@@ -1,35 +1,26 @@
-import { toast } from 'react-toastify'
-export const notifyMessage = (message: String) => toast(message)
-export const notifySuccess = (message: String) =>
-  toast.success(message, {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: 'dark'
-  })
+import { ToastOptions, toast } from 'react-toastify'
+
+export const notifyMessage = (
+  message: String,
+  toastStyleConfig: ToastOptions<{}>
+) => toast(message, toastStyleConfig)
+export const notifySuccess = (
+  message: String,
+  successStyleConfig: ToastOptions<{}>
+) => toast.success(message, successStyleConfig)
 export const notifyPromise = async (
-  prom: Promise<unknown> | (() => Promise<unknown>)
+  prom: Promise<unknown> | (() => Promise<unknown>),
+  pendingMessage: string,
+  successMessage: string,
+  errorMessage: string,
+  promiseStyleConfig?: ToastOptions<{}>
 ) =>
   toast.promise(
     prom,
     {
-      pending: 'Pending upload...',
-      success: 'Upload completed.',
-      error: 'Upload failed.'
+      pending: pendingMessage,
+      success: successMessage,
+      error: errorMessage
     },
-
-    {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'dark'
-    }
+    promiseStyleConfig
   )

@@ -15,7 +15,21 @@ function ForgotPassword() {
     const emailObject = { email: emailValue }
     try {
       await notifyPromise(
-        axios.post('http://localhost:8080/auth/forgot-password', emailObject)
+        axios.post('http://localhost:8080/auth/forgot-password', emailObject),
+        'Sending reset email.',
+        'Reset email sent.',
+        'Error happened.',
+        {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+          theme: 'dark'
+        }
       )
     } catch (error) {
       return error

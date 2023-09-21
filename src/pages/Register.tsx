@@ -1,5 +1,5 @@
 import axios from 'axios'
-import LoginSignupForm from '../components/LoginSignupForm'
+import FormComponent from '../components/LoginSignupForm'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
 
 function Register() {
@@ -8,7 +8,7 @@ function Register() {
   }
   return (
     <div className="login-form-wrapper w-full flex justify-center items-center">
-      <LoginSignupForm
+      <FormComponent
         formType="signup"
         formLabel="Register"
         email={true}
@@ -16,7 +16,11 @@ function Register() {
         userName={true}
         abortButtonLabel="Cancel"
         approveButtonLabel="Register"
-        toastSuccessMessage="Register success."
+        formToastConfig={{
+          formPendingMessage: 'Registering...',
+          formSuccessMessage: 'Registered.',
+          formErrorMessage: 'Error happened.'
+        }}
         callBackDataFunction={register}
       />
     </div>

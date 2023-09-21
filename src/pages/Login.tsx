@@ -1,5 +1,5 @@
 import axios from 'axios'
-import LoginSignupForm from '../components/LoginSignupForm'
+import FormComponent from '../components/LoginSignupForm'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
 import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
@@ -16,22 +16,24 @@ function Login() {
       localStorage.setItem('accessToken', token)
       naivgate('/home')
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error)
-      }
+      return
     }
   }
 
   return (
     <div className="login-form-wrapper w-full flex justify-center items-center">
-      <LoginSignupForm
+      <FormComponent
         formType="login"
         formLabel="Login"
         email={true}
         password={true}
         abortButtonLabel="Cancel"
         approveButtonLabel="Login"
-        toastSuccessMessage="Login success."
+        formToastConfig={{
+          formPendingMessage: 'Logging in...',
+          formSuccessMessage: 'Logged in.',
+          formErrorMessage: 'Error happened.'
+        }}
         callBackDataFunction={login}
       />
     </div>

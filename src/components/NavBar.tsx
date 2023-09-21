@@ -15,7 +15,17 @@ interface navigationItem {
 }
 const handleLogOut = async () => {
   await signOutUser()
-  notifyMessage('Logged out.')
+  notifyMessage('Logged out.', {
+    position: 'top-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    rtl: false,
+    pauseOnFocusLoss: true,
+    draggable: false,
+    pauseOnHover: false,
+    theme: 'dark'
+  })
 }
 const navigation: navigationItem[] = [
   { name: 'Uploader', link: '/uploader', current: true }
