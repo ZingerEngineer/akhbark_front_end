@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import googleSVG from '../svgs/google.svg'
 import facebookSVG from '../svgs/facebook.svg'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
-import { notifyMessage, notifyPromise, notifySuccess } from '../utils/toasts'
 import { ThemeContext } from '../App'
 interface LoginSignupFormProps {
   formType: string
@@ -13,11 +12,6 @@ interface LoginSignupFormProps {
   password?: boolean
   abortButtonLabel: string
   approveButtonLabel: string
-  formToastConfig: {
-    formPendingMessage: string
-    formSuccessMessage: string
-    formErrorMessage: string
-  }
   callBackDataFunction?: (formData: LoginSignupFormData) => Promise<void>
 }
 
@@ -29,7 +23,6 @@ const FormComponent = ({
   password,
   abortButtonLabel,
   approveButtonLabel,
-  formToastConfig,
   callBackDataFunction
 }: LoginSignupFormProps) => {
   const theme = useContext(ThemeContext)
@@ -73,24 +66,10 @@ const FormComponent = ({
     })
   }, [userNameValue, emailValue, passwordValue])
   const handleSignUp = () => {
-    if (callBackDataFunction && formData) {
-      notifyPromise(
-        callBackDataFunction(formData),
-        formToastConfig.formPendingMessage,
-        formToastConfig.formSuccessMessage,
-        formToastConfig.formErrorMessage,
-        {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          rtl: false,
-          pauseOnFocusLoss: true,
-          draggable: false,
-          pauseOnHover: false,
-          theme: 'dark'
-        }
-      )
+    try {
+      if (callBackDataFunction && formData) callBackDataFunction(formData)
+    } catch (error) {
+      return
     }
   }
   return (

@@ -1,21 +1,45 @@
-import axios from 'axios'
+import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
 import FormComponent from '../components/LoginSignupForm'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
 import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { ThemeContext, userDataContext } from '../App'
+import { notifyMessage, notifyPromise } from '../utils/toasts'
+import { ToastOptions } from 'react-toastify'
 
 function Login() {
-  const naivgate = useNavigate()
+  const toastStyleConfig: ToastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    rtl: false,
+    pauseOnFocusLoss: true,
+    draggable: false,
+    pauseOnHover: false,
+    theme: 'dark'
+  }
+  const navigate = useNavigate()
   const userState = useContext(userDataContext)
   const login = async (data: LoginSignupFormData) => {
     try {
-      const res = await axios.post('http://localhost:8080/auth/login/', data)
-      const { userData, token } = res.data.receivedData
+      const res = (await notifyPromise(
+        axios.post('http://localhost:8080/auth/login/', data),
+        'Logging in...',
+        'Logged in.',
+        'Login failed.',
+        toastStyleConfig
+      )) as AxiosResponse
+      const { userData } = res.data.receivedData
       userState?.setUserData(userData)
-      localStorage.setItem('accessToken', token)
-      naivgate('/home')
+      localStorage.setItem('access_token', res.headers.authorization)
+      navigate('/home')
     } catch (error) {
+      if (error instanceof AxiosError) {
+        notifyMessage(error.response?.data.reason, toastStyleConfig)
+        return
+      }
+      notifyMessage('Error happened', toastStyleConfig)
       return
     }
   }
@@ -29,11 +53,6 @@ function Login() {
         password={true}
         abortButtonLabel="Cancel"
         approveButtonLabel="Login"
-        formToastConfig={{
-          formPendingMessage: 'Logging in...',
-          formSuccessMessage: 'Logged in.',
-          formErrorMessage: 'Error happened.'
-        }}
         callBackDataFunction={login}
       />
     </div>
