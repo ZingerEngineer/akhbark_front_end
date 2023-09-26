@@ -1,18 +1,33 @@
+import axios from 'axios'
 import { userDataContext } from '../App'
-import { useContext, useState, useEffect } from 'react'
-import { UserData } from '../interfaces/userData'
+import { useContext, useLayoutEffect, useCallback } from 'react'
 
 const Home = () => {
-  const [userData, setUserData] = useState<null | UserData>(null)
   const userState = useContext(userDataContext)
-  useEffect(() => {
-    if (userState) {
-      setUserData(userState?.userData)
+  const authValidation = useCallback(async () => {
+    const access_token = localStorage.getItem('access_token')
+    if (!access_token) return
+    try {
+      const res = await axios.post(
+        'http://localhost:8080/auth/validate-access-token',
+        null,
+        {
+          headers: {
+            authorization: access_token
+          }
+        }
+      )
+      userState?.setUserData(res.data.userData)
+    } catch (error) {
+      return error
     }
-  }, [userState])
+  }, [])
+  useLayoutEffect(() => {
+    authValidation()
+  }, [])
   return (
     <div className="home-wrapper w-full h-full">
-      <p>{userData?.userName}</p>
+      <p>{userState?.userData?.userName}</p>
     </div>
   )
 }
