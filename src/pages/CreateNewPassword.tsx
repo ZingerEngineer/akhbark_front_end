@@ -21,7 +21,6 @@ function ForgotPassword() {
           }
         }
       )
-      console.log(res)
       setUserEmail(res.data.userEmail)
       if (!res.data.isValidReset) navigate('/login')
     } catch (error) {
@@ -106,6 +105,14 @@ function ForgotPassword() {
           draggable: false,
           pauseOnHover: false,
           theme: 'dark'
+        }
+      )
+      await axios.delete(
+        'http://localhost:8080/auth/delete-reset-password-token',
+        {
+          headers: {
+            reset_password_token
+          }
         }
       )
     } catch (error) {
