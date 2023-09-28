@@ -115,6 +115,7 @@ function ForgotPassword() {
           }
         }
       )
+      navigate('login')
     } catch (error) {
       return error
     }
