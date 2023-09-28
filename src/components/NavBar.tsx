@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import user_white from '../svgs/user_white.svg'
@@ -6,48 +6,59 @@ import { Link } from 'react-router-dom'
 import { signOutUser } from '../utils/signOutUser'
 import { notifyMessage } from '../utils/toasts'
 import { useContext, useEffect, useState } from 'react'
-// import { userDataContext } from '../App'
+import { userDataContext } from '../App'
+import logoImage from '../svgs/akhbark_logo.svg'
+import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 interface navigationItem {
   name: string
   link: string
   current: boolean
   functionality?: React.MouseEventHandler<HTMLAnchorElement>
 }
-const handleLogOut = async () => {
-  await signOutUser()
-  notifyMessage('Logged out.', {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    rtl: false,
-    pauseOnFocusLoss: true,
-    draggable: false,
-    pauseOnHover: false,
-    theme: 'dark'
-  })
-}
+
 const navigation: navigationItem[] = [
-  { name: 'Uploader', link: '/uploader', current: true }
+  { name: 'Feed', link: '/feed', current: true },
+  { name: 'Stories', link: 'stories', current: false },
+  { name: 'Games', link: '/games', current: false }
 ]
 
 function classNames(...classes: (boolean | string | undefined)[]): string {
   return classes.filter(Boolean).join(' ')
 }
 
-const Example = () => {
-  // const userData = useContext(userDataContext)
+export default function NavBar() {
+  const navigate = useNavigate()
+  const { key } = useLocalStorage('access_token')
+  const logout = useCallback(async () => {
+    try {
+      if (!key) return
+      const res = await axios.delete('http://localhost:8080/auth/logout', {
+        headers: {
+          authorization: key
+        }
+      })
+      if (res.data.isDeleted) {
+        localStorage.removeItem('access_token')
+        navigate('/login')
+      }
+    } catch (error) {
+      return error
+    }
+  }, [key, navigate])
+  const userState = useContext(userDataContext)
   const [userEmail, setUserEmail] = useState<string | null | undefined>(null)
   const [userImage, setUserImage] = useState<string | null | undefined>(null)
 
-  // useEffect(() => {
-  // setUserEmail(userData?.currentUser?.email)
-  // setUserImage(userData?.currentUser?.photoURL)
-  // }, [userData])
+  useEffect(() => {
+    setUserEmail(userState?.userData?.email)
+    setUserImage(userState?.userData?.avatar)
+  }, [userState])
   return (
     <Disclosure
       as="nav"
-      className="bg-transparent hover:bg-white/5 duration-100"
+      className="bg-gray-600 hover:bg-gray-500 duration-100 border-b-gray-600 border-t-gray-600"
     >
       {({ open }) => (
         <>
@@ -78,7 +89,7 @@ const Example = () => {
                   >
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src={logoImage}
                       alt="Your Company"
                     />
                   </Link>
@@ -88,7 +99,7 @@ const Example = () => {
                   >
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src={logoImage}
                       alt="Your Company"
                     />
                   </Link>
@@ -103,8 +114,8 @@ const Example = () => {
                           to={item.link}
                           className={classNames(
                             item.current
-                              ? ' text-white drop drop-shadow-[0px_0px_5px_rgba(255,255,255,0.5)] bg-violet-600/20 hover:bg-white/20 hover:duration-200'
-                              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                              ? ' text-white  bg-orange-400 hover:bg-orange-300 hover:duration-200'
+                              : 'text-white hover:bg-gray-700/50 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
                           aria-current={item.current ? 'page' : undefined}
@@ -117,8 +128,8 @@ const Example = () => {
                           to={item.link}
                           className={classNames(
                             item.current
-                              ? ' text-white drop drop-shadow-[0px_0px_5px_rgba(255,255,255,0.5)] bg-violet-600/20 hover:bg-white/20 hover:duration-200'
-                              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                              ? ' text-white  bg-orange-400 hover:bg-orange-300 hover:duration-200'
+                              : 'text-white hover:bg-gray-700/50 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
                           aria-current={item.current ? 'page' : undefined}
@@ -169,7 +180,7 @@ const Example = () => {
                       <Menu.Item>
                         {({ active }) => (
                           <Link
-                            onClick={handleLogOut}
+                            onClick={logout}
                             to="welcome"
                             className={classNames(
                               active ? 'bg-gray-100' : '',
@@ -197,8 +208,8 @@ const Example = () => {
                     to={item.link}
                     className={classNames(
                       item.current
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        ? 'text-white bg-orange-400 hover:bg-orange-300 hover:duration-200'
+                        : 'text-white hover:bg-gray-700/50 hover:text-white',
                       'block rounded-md px-3 py-2 text-base font-medium'
                     )}
                     aria-current={item.current ? 'page' : undefined}
@@ -211,8 +222,8 @@ const Example = () => {
                     to={item.link}
                     className={classNames(
                       item.current
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        ? 'text-white bg-orange-400 hover:bg-orange-300 hover:duration-200'
+                        : 'text-white hover:bg-gray-700/50 hover:text-white',
                       'block rounded-md px-3 py-2 text-base font-medium'
                     )}
                     aria-current={item.current ? 'page' : undefined}
@@ -228,4 +239,3 @@ const Example = () => {
     </Disclosure>
   )
 }
-export default Example
