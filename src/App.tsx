@@ -5,9 +5,21 @@ import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { createContext, useContext, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useState
+} from 'react'
 import { UserData } from './interfaces/userData'
 import CreateNewPassword from './pages/CreateNewPassword'
+import { useLocalStorage } from './hooks/useLocalStorage'
+import axios from 'axios'
+import AuthenticatedRoute from './routes/AuthenticatedRoute'
+import UnAuthenticatedRoute from './routes/UnAuthenticatedRoute'
+import PublicRoute from './routes/PublicRoute'
+import Terms from './pages/Terms'
 
 export const ThemeContext = createContext('light')
 export const userDataContext = createContext<{
@@ -16,8 +28,8 @@ export const userDataContext = createContext<{
 } | null>(null)
 
 function App() {
-  const theme = useContext(ThemeContext)
   const [userData, setUserData] = useState<UserData | null>(null)
+  const theme = useContext(ThemeContext)
   return (
     <div className="app-wrapper w-full h-full flex">
       <ToastContainer />
@@ -31,23 +43,51 @@ function App() {
           <Routes>
             <Route
               path="/home"
-              element={<Home />}
+              element={
+                <AuthenticatedRoute>
+                  <Home />
+                </AuthenticatedRoute>
+              }
             ></Route>
             <Route
               path="/register"
-              element={<Register />}
+              element={
+                <UnAuthenticatedRoute>
+                  <Register />
+                </UnAuthenticatedRoute>
+              }
             ></Route>
             <Route
               path="/login"
-              element={<Login />}
+              element={
+                <UnAuthenticatedRoute>
+                  <Login />
+                </UnAuthenticatedRoute>
+              }
             ></Route>
             <Route
               path="/forgot-password"
-              element={<ForgotPassword />}
+              element={
+                <UnAuthenticatedRoute>
+                  <ForgotPassword />
+                </UnAuthenticatedRoute>
+              }
             ></Route>
             <Route
               path="/create-new-password/:reset_password_token"
-              element={<CreateNewPassword />}
+              element={
+                <UnAuthenticatedRoute>
+                  <CreateNewPassword />
+                </UnAuthenticatedRoute>
+              }
+            ></Route>
+            <Route
+              path="/terms-and-conditions"
+              element={
+                <PublicRoute>
+                  <Terms />
+                </PublicRoute>
+              }
             ></Route>
           </Routes>
         </userDataContext.Provider>
