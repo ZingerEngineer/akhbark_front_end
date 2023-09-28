@@ -1,19 +1,24 @@
 import axios from 'axios'
 import { userDataContext } from '../App'
 import { useContext, useLayoutEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Button from '../components/Button'
+import { useLocalStorage } from '../hooks/useLocalStorage'
+import NavBar from '../components/NavBar'
 
 const Home = () => {
   const userState = useContext(userDataContext)
+  const { key } = useLocalStorage('access_token')
+
   const authValidation = useCallback(async () => {
-    const access_token = localStorage.getItem('access_token')
-    if (!access_token) return
+    if (!key) return
     try {
       const res = await axios.post(
         'http://localhost:8080/auth/validate-access-token',
         null,
         {
           headers: {
-            authorization: access_token
+            authorization: key
           }
         }
       )
@@ -21,13 +26,13 @@ const Home = () => {
     } catch (error) {
       return error
     }
-  }, [])
+  }, [key, userState])
   useLayoutEffect(() => {
     authValidation()
-  }, [])
+  }, [key, authValidation])
   return (
     <div className="home-wrapper w-full h-full">
-      <p>{userState?.userData?.userName}</p>
+      <NavBar />
     </div>
   )
 }
