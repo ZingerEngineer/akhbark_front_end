@@ -1,13 +1,11 @@
 import { Fragment, useCallback } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import user_white from '../svgs/user_white.svg'
 import { Link } from 'react-router-dom'
-import { signOutUser } from '../utils/signOutUser'
-import { notifyMessage } from '../utils/toasts'
 import { useContext, useEffect, useState } from 'react'
 import { userDataContext } from '../App'
 import logoImage from '../svgs/akhbark_logo.svg'
+import user_default from '../svgs/user_default.svg'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -41,12 +39,11 @@ export default function NavBar() {
       })
       if (res.data.isDeleted) {
         localStorage.removeItem('access_token')
-        navigate('/login')
       }
     } catch (error) {
       return error
     }
-  }, [key, navigate])
+  }, [key])
   const userState = useContext(userDataContext)
   const [userEmail, setUserEmail] = useState<string | null | undefined>(null)
   const [userImage, setUserImage] = useState<string | null | undefined>(null)
@@ -149,7 +146,7 @@ export default function NavBar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src={userImage ? userImage : user_white}
+                        src={userImage ? userImage : user_default}
                         alt="user_avatar"
                       />
                     </Menu.Button>
@@ -181,7 +178,7 @@ export default function NavBar() {
                         {({ active }) => (
                           <Link
                             onClick={logout}
-                            to="welcome"
+                            to="/login"
                             className={classNames(
                               active ? 'bg-gray-100' : '',
                               'block px-4 py-2 text-sm text-gray-700'
