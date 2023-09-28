@@ -115,7 +115,7 @@ function ForgotPassword() {
           }
         }
       )
-      navigate('login')
+      navigate('/login')
     } catch (error) {
       return error
     }
@@ -128,7 +128,7 @@ function ForgotPassword() {
         className="bg-white p-5 rounded-md flex-grow max-w-[70vmin] drop-shadow-[0px_0px_20px_rgb(0,0,0,0.2)]"
       >
         <div className="text-center mt-3">
-          <p className="text-violet-600 font-bold text-3xl">
+          <p className="text-orange-600 font-bold text-3xl">
             Create new password
           </p>
         </div>
@@ -148,7 +148,7 @@ function ForgotPassword() {
                   name="password"
                   type="text"
                   autoComplete="password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 outline-none"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6 pl-3 outline-none"
                   value={passwordValue}
                   onChange={handleOnPasswordChange}
                 />
@@ -167,7 +167,7 @@ function ForgotPassword() {
                   name="confirmPassword"
                   type="text"
                   autoComplete="confirmPassword"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 outline-none"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6 pl-3 outline-none"
                   value={confirmPasswordValue}
                   onChange={handleOnConfirmPasswordChange}
                 />
@@ -180,7 +180,7 @@ function ForgotPassword() {
           <Link to="/">Cancel</Link>
           <button
             type="submit"
-            className="rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
             onClick={handleOnClick}
           >
             Enter
