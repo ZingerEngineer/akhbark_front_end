@@ -28,7 +28,7 @@ function classNames(...classes: (boolean | string | undefined)[]): string {
 
 export default function NavBar() {
   const navigate = useNavigate()
-  const { key } = useLocalStorage('access_token')
+  const key = localStorage.getItem('access_token')
   const logout = useCallback(async () => {
     try {
       if (!key) return
@@ -39,19 +39,20 @@ export default function NavBar() {
       })
       if (res.data.isDeleted) {
         localStorage.removeItem('access_token')
+        navigate('/login')
       }
     } catch (error) {
       return error
     }
   }, [key])
-  const userState = useContext(userDataContext)
+  const userData = useContext(userDataContext)
   const [userEmail, setUserEmail] = useState<string | null | undefined>(null)
   const [userImage, setUserImage] = useState<string | null | undefined>(null)
 
   useEffect(() => {
-    setUserEmail(userState?.userData?.email)
-    setUserImage(userState?.userData?.avatar)
-  }, [userState])
+    setUserEmail(userData?.userData?.email)
+    setUserImage(userData?.userData?.avatar)
+  }, [userData])
   return (
     <Disclosure
       as="nav"
@@ -176,16 +177,15 @@ export default function NavBar() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
+                          <button
                             onClick={logout}
-                            to="/login"
                             className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              active ? 'bg-gray-100 w-full text-left' : '',
+                              'block px-4 py-2 text-sm text-gray-700 w-full text-left'
                             )}
                           >
                             Log out
-                          </Link>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>
