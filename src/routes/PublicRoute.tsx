@@ -3,18 +3,20 @@ import { useState, useEffect, useContext, useCallback } from 'react'
 import axios from 'axios'
 import { userDataContext } from '../App'
 import { useNavigate } from 'react-router-dom'
-interface AuthenticatedRouteProps {
+interface PublicRouteProps {
   children: JSX.Element
 }
 
-function AuthenticatedRoute(props: AuthenticatedRouteProps) {
-  const navigate = useNavigate()
+function PublicRoute(props: PublicRouteProps) {
   const [isLoading, setIsLoading] = useState(true)
   const userData = useContext(userDataContext)
   const { children } = props
   const key = localStorage.getItem('access_token')
-  const getUserData = useCallback(async () => {
-    if (!key) navigate('/login')
+  const checkUserData = useCallback(async () => {
+    if (!key) {
+      setIsLoading(false)
+      return
+    }
     try {
       const res = await axios.post(
         'http://localhost:8080/auth/validate-access-token',
@@ -28,13 +30,13 @@ function AuthenticatedRoute(props: AuthenticatedRouteProps) {
       userData?.setUserData(res.data.userData)
       setIsLoading(false)
     } catch (error) {
-      navigate('/login')
       setIsLoading(false)
+      return error
     }
-  }, [])
+  }, [key, userData])
   useEffect(() => {
-    getUserData()
-  }, [])
+    checkUserData()
+  }, [checkUserData])
 
   return (
     <>
@@ -51,6 +53,6 @@ function AuthenticatedRoute(props: AuthenticatedRouteProps) {
     </>
   )
 }
-export default AuthenticatedRoute
+export default PublicRoute
 
 //
