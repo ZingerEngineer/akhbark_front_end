@@ -30,7 +30,7 @@ function Login() {
         'Login failed.',
         toastStyleConfig
       )) as AxiosResponse
-      const { userData } = res.data.receivedData
+      const { userData } = res.data.userData
       userState?.setUserData(userData)
       localStorage.setItem('access_token', res.headers.authorization)
       navigate('/home')
