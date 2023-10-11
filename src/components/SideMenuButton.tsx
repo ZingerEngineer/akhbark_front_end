@@ -8,17 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import react, { Fragment, ReactElement } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-
-const renderIconAsNode = (
-  iconComponent: React.ForwardRefExoticComponent<
-    Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
-      title?: string | undefined
-      titleId?: string | undefined
-    } & React.RefAttributes<SVGSVGElement>
-  >
-) => {
-  return react.createElement(iconComponent) as ReactElement
-}
+import { renderIconAsNode } from '../utils/renderIconAsNode'
 interface ISideMenuButtonContextMenuItem {
   icon: React.ForwardRefExoticComponent<
     Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
@@ -43,7 +33,7 @@ interface ISideMenuButton {
 const settingsButtonContextMenuItems = [
   {
     icon: UserIcon,
-    label: 'Profile'
+    label: 'Edit profile'
   },
   {
     icon: NoSymbolIcon,
@@ -70,6 +60,12 @@ export const SideMenuButtons: ISideMenuButton[] = [
 ]
 
 interface SideMenuButtonProps {
+  icon: React.ForwardRefExoticComponent<
+    Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
+      title?: string | undefined
+      titleId?: string | undefined
+    } & React.RefAttributes<SVGSVGElement>
+  >
   label: string
   droppable: boolean
   contextMenuItems: ISideMenuButtonContextMenuItem[] | undefined
@@ -80,17 +76,24 @@ function classNames(...classes: string[]) {
 }
 
 function SideMenuButton(props: SideMenuButtonProps) {
-  const { label, droppable, contextMenuItems } = props
+  const { icon, label, droppable, contextMenuItems } = props
   return (
     <Menu
       as="div"
       className="relative inline-block text-left"
     >
       <div>
-        <Menu.Button className="inline-flex w-full justify-around gap-x-1.5  bg-gray-700 px-3 py-2 text-sm font-semibold text-white  hover:bg-gray-600">
-          {label}
+        <Menu.Button
+          key={label}
+          className="inline-flex w-full justify-between gap-x-1.5  bg-gray-700 px-3 py-2 text-sm font-semibold text-white  hover:bg-gray-600"
+        >
+          <div className="tab-label-icon flex flex-row gap-2">
+            {renderIconAsNode(icon, 'w-5')}
+            {label}
+          </div>
           {droppable ? (
             <ChevronDownIcon
+              key={label}
               className="-mr-1 h-5 w-5 text-gray-400"
               aria-hidden="true"
             />
@@ -113,16 +116,19 @@ function SideMenuButton(props: SideMenuButtonProps) {
           <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               {contextMenuItems?.map((item) => (
-                <Menu.Item>
+                <Menu.Item key={item.label}>
                   {({ active }) => (
                     <a
+                      key={item.label}
                       href="#"
                       className={classNames(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
+                        active
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'text-gray-700 flex flex-row gap-2',
+                        'block px-4 py-2 text-sm flex flex-row gap-2'
                       )}
                     >
-                      {renderIconAsNode(item.icon)}
+                      {renderIconAsNode(item.icon, 'w-5')}
                       {item.label}
                     </a>
                   )}
