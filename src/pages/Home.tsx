@@ -1,7 +1,3 @@
-import axios from 'axios'
-import { userDataContext } from '../App'
-import { useContext, useLayoutEffect, useCallback } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
 import NavBar from '../components/NavBar'
 import SideMenu from '../components/SideMenu'
 import SideMenuButton from '../components/SideMenuButton'
@@ -16,6 +12,8 @@ const Home = () => {
           {SideMenuButtons.map((button) => {
             return (
               <SideMenuButton
+                icon={button.icon}
+                key={button.label}
                 label={button.label}
                 droppable={button.droppable}
                 contextMenuItems={button.contextMenuItems}
