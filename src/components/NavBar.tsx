@@ -1,19 +1,40 @@
-import { Fragment, useCallback } from 'react'
+import { Fragment, MouseEventHandler, useCallback } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserIcon,
+  ArrowRightOnRectangleIcon
+} from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { userDataContext } from '../App'
 import logoImage from '../svgs/akhbark_logo.svg'
 import user_default from '../svgs/user_default.svg'
-import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { renderIconAsNode } from '../utils/renderIconAsNode'
+
 interface navigationItem {
   name: string
   link: string
   current: boolean
   functionality?: React.MouseEventHandler<HTMLAnchorElement>
+}
+
+interface profileMenuItem {
+  label: string
+  icon: React.ForwardRefExoticComponent<
+    Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
+      title?: string | undefined
+      titleId?: string | undefined
+    } & React.RefAttributes<SVGSVGElement>
+  >
+  function: MouseEventHandler<HTMLButtonElement>
+}
+
+function classNames(...classes: (boolean | string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ')
 }
 
 const navigation: navigationItem[] = [
@@ -22,14 +43,10 @@ const navigation: navigationItem[] = [
   { name: 'Games', link: '/games', current: false }
 ]
 
-function classNames(...classes: (boolean | string | undefined)[]): string {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default function NavBar() {
   const navigate = useNavigate()
   const key = localStorage.getItem('access_token')
-  const logout = useCallback(async () => {
+  const handleLogOutClick = useCallback(async () => {
     try {
       if (!key) return
       const res = await axios.delete('http://localhost:8080/auth/logout', {
@@ -44,7 +61,18 @@ export default function NavBar() {
     } catch (error) {
       return error
     }
-  }, [key])
+  }, [])
+  const handleProfileButtonClick = useCallback(() => {
+    navigate('/profile')
+  }, [])
+  const profileMenuItems: profileMenuItem[] = [
+    { label: 'Profile', icon: UserIcon, function: handleProfileButtonClick },
+    {
+      label: 'logout',
+      icon: ArrowRightOnRectangleIcon,
+      function: handleLogOutClick
+    }
+  ]
   const userData = useContext(userDataContext)
   const [userEmail, setUserEmail] = useState<string | null | undefined>(null)
   const [userImage, setUserImage] = useState<string | null | undefined>(null)
@@ -162,19 +190,24 @@ export default function NavBar() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={logout}
-                            className={classNames(
-                              active ? 'bg-gray-100 w-full text-left' : '',
-                              'block px-4 py-2 text-sm text-gray-700 w-full text-left'
-                            )}
-                          >
-                            Log out
-                          </button>
-                        )}
-                      </Menu.Item>
+                      {profileMenuItems.map((item) => (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={item.function}
+                              className={classNames(
+                                active
+                                  ? 'bg-gray-100 w-full text-left flex flex-row gap-2'
+                                  : 'flex flex-row gap-2',
+                                'block px-4 py-2 text-sm text-gray-700 w-full text-left '
+                              )}
+                            >
+                              {renderIconAsNode(item.icon, 'w-5')}
+                              {item.label}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      ))}
                     </Menu.Items>
                   </Transition>
                 </Menu>
