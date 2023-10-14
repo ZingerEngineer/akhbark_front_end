@@ -6,7 +6,7 @@ import {
   UserGroupIcon,
   ChevronDownIcon
 } from '@heroicons/react/24/outline'
-import react, { Fragment, ReactElement } from 'react'
+import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { renderIconAsNode } from '../utils/renderIconAsNode'
 interface ISideMenuButtonContextMenuItem {
