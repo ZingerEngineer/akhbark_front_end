@@ -4,6 +4,13 @@ import googleSVG from '../svgs/google.svg'
 import facebookSVG from '../svgs/facebook.svg'
 import LoginSignupFormData from '../interfaces/LoginSignupFormData'
 import { ThemeContext } from '../App'
+import { renderIconAsNode } from '../utils/renderIconAsNode'
+import {
+  KeyIcon,
+  UserPlusIcon,
+  ShieldCheckIcon,
+  ArrowLeftOnRectangleIcon
+} from '@heroicons/react/24/outline'
 interface LoginSignupFormProps {
   formType: string
   formLabel: string
@@ -14,6 +21,58 @@ interface LoginSignupFormProps {
   approveButtonLabel: string
   callBackDataFunction?: (formData: LoginSignupFormData) => Promise<void>
 }
+
+const handleGoogleCallBack = async () => {
+  try {
+    //TODO: Write login  with google logic integrating with backend.
+  } catch (error) {}
+}
+const handleFaceBookCallBack = async () => {
+  try {
+    //TODO: Write login  with facebook logic integrating with backend.
+  } catch (error) {}
+}
+
+const loginFormOptions = [
+  {
+    label: 'Forgot password ?',
+    link: '/forgot-password',
+    icon: KeyIcon
+  },
+  {
+    label: 'Join us.',
+    link: '/register',
+    icon: UserPlusIcon
+  }
+]
+
+const registerFormOptions = [
+  {
+    label: 'Already registered ?',
+    link: '/login',
+    icon: ArrowLeftOnRectangleIcon
+  },
+  {
+    label: 'Terms & Conditions',
+    link: '/terms-and-conditions',
+    icon: ShieldCheckIcon
+  }
+]
+
+const authVendors = [
+  {
+    enabled: true,
+    src: googleSVG,
+    alt: 'google-icon',
+    functionality: handleGoogleCallBack
+  },
+  {
+    enabled: true,
+    src: facebookSVG,
+    alt: 'facebook-icon',
+    functionality: handleFaceBookCallBack
+  }
+]
 
 const FormComponent = ({
   formType,
@@ -27,30 +86,7 @@ const FormComponent = ({
 }: LoginSignupFormProps) => {
   const theme = useContext(ThemeContext)
   const navigate = useNavigate()
-  const handleGoogleCallBack = async () => {
-    try {
-      //TODO: Write login  with google logic integrating with backend.
-    } catch (error) {}
-  }
-  const handleFaceBookCallBack = async () => {
-    try {
-      //TODO: Write login  with facebook logic integrating with backend.
-    } catch (error) {}
-  }
-  const authVendors = [
-    {
-      enabled: true,
-      src: googleSVG,
-      alt: 'google-icon',
-      functionality: handleGoogleCallBack
-    },
-    {
-      enabled: true,
-      src: facebookSVG,
-      alt: 'facebook-icon',
-      functionality: handleFaceBookCallBack
-    }
-  ]
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
   }
@@ -179,17 +215,26 @@ const FormComponent = ({
               )
             )}
           </div>
-          <div className="forgot-credentials-wrapper px-3 mt-5 flex justify-center">
-            {formType === 'login' ? (
-              <Link
-                to="/forgot-password"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Forgot password ?
-              </Link>
-            ) : (
-              ''
-            )}
+          <div className="form-options px-3 mt-5 flex justify-center gap-4">
+            {formType === 'login'
+              ? loginFormOptions.map((item) => (
+                  <Link
+                    className="gap-2 text-sm font-semibold leading-6 text-white flex flex-row bg-orange-500 rounded-md p-2"
+                    to={item.link}
+                  >
+                    {renderIconAsNode(item.icon, 'w-5')}
+                    {item.label}
+                  </Link>
+                ))
+              : registerFormOptions.map((item) => (
+                  <Link
+                    className="gap-2 text-sm font-semibold leading-6 text-white flex flex-row bg-orange-500 rounded-md p-2"
+                    to={item.link}
+                  >
+                    {renderIconAsNode(item.icon, 'w-5')}
+                    {item.label}
+                  </Link>
+                ))}
           </div>
         </div>
       </div>
@@ -203,7 +248,7 @@ const FormComponent = ({
         </Link>
         <button
           type="submit"
-          className="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+          className="rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
           onClick={handleSignUp}
         >
           {approveButtonLabel}
