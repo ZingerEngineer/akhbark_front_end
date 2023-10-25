@@ -5,17 +5,9 @@ import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useState
-} from 'react'
+import { createContext, useContext, useState } from 'react'
 import { UserData } from './interfaces/userData'
 import CreateNewPassword from './pages/CreateNewPassword'
-import { useLocalStorage } from './hooks/useLocalStorage'
-import axios from 'axios'
 import AuthenticatedRoute from './routes/AuthenticatedRoute'
 import UnAuthenticatedRoute from './routes/UnAuthenticatedRoute'
 import PublicRoute from './routes/PublicRoute'
