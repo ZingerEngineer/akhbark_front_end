@@ -11,6 +11,7 @@ import {
   ShieldCheckIcon,
   ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline'
+import { getGoogleOAuthURL } from '../services/getGoogleOAuthURL'
 interface LoginSignupFormProps {
   formType: string
   formLabel: string
@@ -24,8 +25,15 @@ interface LoginSignupFormProps {
 
 const handleGoogleCallBack = async () => {
   try {
-    //TODO: Write login  with google logic integrating with backend.
-  } catch (error) {}
+    getGoogleOAuthURL()
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error, `Error Message:${error.message}`)
+      return
+    }
+    console.log(error)
+    return
+  }
 }
 const handleFaceBookCallBack = async () => {
   try {
@@ -197,28 +205,22 @@ const FormComponent = ({
             ''
           )}
           <div className="auth-buttons px-3 mt-5 flex justify-center">
-            {authVendors.map((item) =>
-              item.enabled ? (
-                <button
-                  onClick={item.functionality}
-                  key={item.alt}
-                  className="google-auth-button rounded-full shadow-md border-solid border-2 border-gray-200 p-2 mx-1"
-                >
-                  <img
-                    className="w-6"
-                    src={item.src}
-                    alt={item.alt}
-                  />
-                </button>
-              ) : (
-                ''
-              )
-            )}
+            <a
+              href={getGoogleOAuthURL()}
+              className="google-auth-button rounded-full shadow-md border-solid border-2 border-gray-200 p-2 mx-1"
+            >
+              <img
+                className="w-6"
+                src={googleSVG}
+                alt={'google icon'}
+              />
+            </a>
           </div>
           <div className="form-options px-3 mt-5 flex justify-center gap-4">
             {formType === 'login'
               ? loginFormOptions.map((item) => (
                   <Link
+                    key={item.label}
                     className="gap-2 text-sm font-semibold leading-6 text-white flex flex-row bg-orange-500 rounded-md p-2"
                     to={item.link}
                   >
@@ -228,6 +230,7 @@ const FormComponent = ({
                 ))
               : registerFormOptions.map((item) => (
                   <Link
+                    key={item.label}
                     className="gap-2 text-sm font-semibold leading-6 text-white flex flex-row bg-orange-500 rounded-md p-2"
                     to={item.link}
                   >
