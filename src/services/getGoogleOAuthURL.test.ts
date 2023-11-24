@@ -6,7 +6,7 @@ describe('Get google url test', () => {
     const givenOptions = {
       client_id: process.env.REACT_APP_CLIENT_ID as string,
       redirect_uri: process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT_URL as string,
-      response_type: 'token',
+      response_type: 'code',
       scope: [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile'

@@ -8,7 +8,7 @@ export const getGoogleOAuthURL = () => {
   const urlAuthParamsOptions = {
     client_id: process.env.REACT_APP_CLIENT_ID,
     redirect_uri: process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT_URL,
-    response_type: 'token',
+    response_type: 'code',
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile'
